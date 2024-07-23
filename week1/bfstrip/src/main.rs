@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             _ => {}
         }
     }
-    print!("\n");
+    println!();
 
     Ok(())
 }
