@@ -1,8 +1,7 @@
-use std::io::{self, BufReader};
+use std::io::BufReader;
 use std::io::prelude::*;
 use std::fs::File;
 use std::env::args;
-use std::fs;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
