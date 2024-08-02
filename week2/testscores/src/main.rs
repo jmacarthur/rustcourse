@@ -10,6 +10,20 @@ enum TestRecord {
     String
 }
 
+impl TestRecord {
+    fn new(name: String) {
+        Self ( name )
+    }
+}
+
+impl TryFrom<&str> for TestRecord {
+    fn try_from(value: &str) -> Result<TestRecord, Box<dyn Error>> {
+        let parts = value.split(":");
+        let record = TestRecord::new(String::new("Hello world"));
+        Ok(record)
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>>
 {
     println!("Hello, world!");
