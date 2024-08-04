@@ -6,20 +6,21 @@ use std::io::BufRead;
 use std::fs::File;
 
 enum TestRecord {
-    TupleKind(String, i64),
-    String
+    NameAndScore(String, i64),
+    NameOnly(String)
 }
 
 impl TestRecord {
-    fn new(name: String) {
-        Self ( name )
+    fn new(name: String) -> TestRecord {
+        TestRecord::NameOnly ( name )
     }
 }
 
 impl TryFrom<&str> for TestRecord {
-    fn try_from(value: &str) -> Result<TestRecord, Box<dyn Error>> {
+    type Error = ();
+    fn try_from(value: &str) -> Result<TestRecord, ()> {
         let parts = value.split(":");
-        let record = TestRecord::new(String::new("Hello world"));
+        let record = TestRecord::NameOnly(String::from("Hello world"));
         Ok(record)
     }
 }
