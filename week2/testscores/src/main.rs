@@ -7,7 +7,7 @@ use std::fs::File;
 
 #[derive (Debug)]
 enum TestRecord {
-    NameAndScore(String, i64),
+    NameAndNumber(String, i64),
     NameOnly(String)
 }
 
@@ -21,7 +21,6 @@ impl TryFrom<&str> for TestRecord {
     type Error = ();
     fn try_from(value: &str) -> Result<TestRecord, ()> {
         let parts : Vec<&str> = value.split(":").collect();
-        println!("{:?}", parts);
         let record = match parts.len() {
             1 => TestRecord::NameOnly(String::from(parts[0])),
             2 => {
@@ -30,7 +29,7 @@ impl TryFrom<&str> for TestRecord {
                     Ok(x) => x,
                     Err(x) => {panic!("{}", x)}
                 };
-                TestRecord::NameAndScore(String::from(parts[0]), score)
+                TestRecord::NameAndNumber(String::from(parts[0]), score)
             },
             _ => panic!("Unimplemented")
         };
@@ -47,7 +46,7 @@ fn main() -> Result<(), Box<dyn Error>>
     for line in f_reader.lines() {
         match line {
             Ok(l) => {
-                let record = TestRecord::new(l);
+                let record = TestRecord::try_from(&*l);
                 println!("{:?}", record );
             },
             Err(x) => { panic!("Failed to read line: {}", x) }
