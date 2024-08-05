@@ -5,6 +5,7 @@ use std::io::BufRead;
 
 use std::fs::File;
 
+#[derive (Debug)]
 enum TestRecord {
     NameAndScore(String, i64),
     NameOnly(String)
@@ -19,8 +20,20 @@ impl TestRecord {
 impl TryFrom<&str> for TestRecord {
     type Error = ();
     fn try_from(value: &str) -> Result<TestRecord, ()> {
-        let parts = value.split(":");
-        let record = TestRecord::NameOnly(String::from("Hello world"));
+        let parts : Vec<&str> = value.split(":").collect();
+        println!("{:?}", parts);
+        let record = match parts.len() {
+            1 => TestRecord::NameOnly(String::from(parts[0])),
+            2 => {
+                // Why can't we just use the '?' operator here?
+                let score : i64 = match parts[1].parse() {
+                    Ok(x) => x,
+                    Err(x) => {panic!("{}", x)}
+                };
+                TestRecord::NameAndScore(String::from(parts[0]), score)
+            },
+            _ => panic!("Unimplemented")
+        };
         Ok(record)
     }
 }
@@ -32,8 +45,13 @@ fn main() -> Result<(), Box<dyn Error>>
     let f = File::open(fname)?;
     let f_reader = BufReader::new(f);
     for line in f_reader.lines() {
-        println!("{}", line?);
+        match line {
+            Ok(l) => {
+                let record = TestRecord::new(l);
+                println!("{:?}", record );
+            },
+            Err(x) => { panic!("Failed to read line: {}", x) }
+        }
     }
     Ok(())
-
 }
