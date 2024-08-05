@@ -37,6 +37,24 @@ impl TryFrom<&str> for TestRecord {
     }
 }
 
+fn readRecords(filename: &str) -> Result<Vec<TestRecord>, Box<dyn std::error::Error>> {
+
+    let mut records : Vec<TestRecord> = Vec::new();
+    let f = File::open(filename)?;
+    let f_reader = BufReader::new(f);
+    for line in f_reader.lines() {
+        match line {
+            Ok(l) => {
+                let record = TestRecord::try_from(&*l);
+                println!("{:?}", record );
+                records.push(record?);
+            },
+            Err(x) => { panic!("Failed to read line: {}", x) }
+        }
+    }
+    Ok(records)
+}
+
 fn main() -> Result<(), Box<dyn Error>>
 {
     println!("Hello, world!");
