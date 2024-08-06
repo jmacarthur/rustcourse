@@ -50,5 +50,8 @@ fn main() -> Result<(), Box<dyn Error>>
     let fname = args().nth(1).ok_or("Expected filename")?;
     let fname_str = fname.as_str();
     let records = read_records(&fname_str);
+    for record in records? {
+        println!("{:?}", record );
+    }
     Ok(())
 }
