@@ -15,15 +15,14 @@ impl TryFrom<&str> for TestRecord {
     type Error = Box<dyn std::error::Error>;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         let parts: Vec<&str> = value.split(":").collect();
-        let record = match parts.len() {
-            1 => Self::NameOnly(String::from(parts[0])),
-            2 => {
-                let score: i64 = parts[1].parse()?;
-                Self::NameAndNumber(String::from(parts[0]), score)
-            }
-            _ => panic!("Unimplemented"),
+        return match parts.len() {
+            1 => Ok(Self::NameOnly(String::from(parts[0]))),
+            2 => Ok(Self::NameAndNumber(
+                String::from(parts[0]),
+                parts[1].parse()?,
+            )),
+            _ => Err("Only records with 1 or 2 fields are supported".into()),
         };
-        Ok(record)
     }
 }
 
