@@ -18,17 +18,13 @@ impl TestRecord {
 }
 
 impl TryFrom<&str> for TestRecord {
-    type Error = ();
+    type Error = Box<dyn std::error::Error>;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         let parts : Vec<&str> = value.split(":").collect();
         let record = match parts.len() {
             1 => Self::NameOnly(String::from(parts[0])),
             2 => {
-                // Why can't we just use the '?' operator here? Does it not return error?
-                let score : i64 = match parts[1].parse() {
-                    Ok(x) => x,
-                    Err(x) => {panic!("{}", x)}
-                };
+                let score : i64 = parts[1].parse()?;
                 Self::NameAndNumber(String::from(parts[0]), score)
             },
             _ => panic!("Unimplemented")
