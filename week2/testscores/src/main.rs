@@ -2,13 +2,36 @@ use std::env::args;
 use std::error::Error;
 use std::io::BufRead;
 use std::io::BufReader;
-
+use std::collections::HashMap;
 use std::fs::File;
 
 #[derive(Debug)]
 enum TestRecord {
     NameAndNumber(String, i64),
     NameOnly(String),
+}
+
+#[derive(Debug)]
+struct ScoreStruct {
+    total_score : i64,
+    number_of_results: i64,
+    missed_tests: i64
+}
+
+impl ScoreStruct {
+    fn add_score(&mut self, score: i64) {
+        self.total_score += score;
+        self.number_of_results += 1;
+    }
+    fn add_missed_test(&mut self) {
+        self.missed_tests += 1;
+    }
+}
+
+impl Default for ScoreStruct {
+    fn default() -> Self {
+        Self {total_score: 0, number_of_results: 0, missed_tests: 0}
+    }
 }
 
 impl TryFrom<&str> for TestRecord {
@@ -49,8 +72,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let fname = args().nth(1).ok_or("Expected filename")?;
     let fname_str = fname.as_str();
     let records = read_records(&fname_str);
+    let mut hashmap : HashMap<String, ScoreStruct> = HashMap::new();
+    print!("{:?}", records);
     for record in records? {
-        println!("{:?}", record);
+        match record {
+            TestRecord::NameAndNumber(name, score) => {
+                hashmap.entry(name).or_insert(ScoreStruct::default()).add_score(score); },
+            TestRecord::NameOnly(name) => {
+                hashmap.entry(name).or_insert(ScoreStruct::default()).add_missed_test();
+            }
+        }
     }
+    print!("{:?}", hashmap);
+
     Ok(())
 }
