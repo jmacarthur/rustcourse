@@ -11,12 +11,6 @@ enum TestRecord {
     NameOnly(String)
 }
 
-impl TestRecord {
-    fn new(name: String) -> TestRecord {
-        TestRecord::NameOnly ( name )
-    }
-}
-
 impl TryFrom<&str> for TestRecord {
     type Error = Box<dyn std::error::Error>;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
@@ -42,7 +36,6 @@ fn read_records(filename: &str) -> Result<Vec<TestRecord>, Box<dyn std::error::E
         match line {
             Ok(l) => {
                 let record = TestRecord::try_from(&*l);
-                println!("{:?}", record );
                 records.push(record?);
             },
             Err(x) => { panic!("Failed to read line: {}", x) }
