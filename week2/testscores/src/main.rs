@@ -43,10 +43,7 @@ fn read_records(filename: &str) -> Result<Vec<TestRecord>, Box<dyn std::error::E
             Ok(l) => {
                 let record = TestRecord::try_from(&*l);
                 println!("{:?}", record );
-                match record {
-                    Ok(x) => { records.push(x); },
-                    Err(x) => { panic!("Failed to parse line: {:?}", x);}
-                };
+                records.push(record?);
             },
             Err(x) => { panic!("Failed to read line: {}", x) }
         }
@@ -59,8 +56,6 @@ fn main() -> Result<(), Box<dyn Error>>
     println!("Hello, world!");
     let fname = args().nth(1).ok_or("Expected filename")?;
     let fname_str = fname.as_str();
-    let f = File::open(fname_str)?;
-    let f_reader = BufReader::new(f);
     let records = read_records(&fname_str);
     Ok(())
 }
