@@ -24,7 +24,7 @@ impl TryFrom<&str> for TestRecord {
         let record = match parts.len() {
             1 => TestRecord::NameOnly(String::from(parts[0])),
             2 => {
-                // Why can't we just use the '?' operator here?
+                // Why can't we just use the '?' operator here? Does it not return error?
                 let score : i64 = match parts[1].parse() {
                     Ok(x) => x,
                     Err(x) => {panic!("{}", x)}
@@ -47,7 +47,10 @@ fn readRecords(filename: &str) -> Result<Vec<TestRecord>, Box<dyn std::error::Er
             Ok(l) => {
                 let record = TestRecord::try_from(&*l);
                 println!("{:?}", record );
-                records.push(record?);
+                match record {
+                    Ok(x) => { records.push(x); },
+                    Err(x) => { panic!("Failed to parse line: {:?}", x);}
+                };
             },
             Err(x) => { panic!("Failed to read line: {}", x) }
         }
