@@ -71,6 +71,14 @@ fn read_records(filename: &str) -> Result<Vec<TestRecord>, Box<dyn std::error::E
     Ok(records)
 }
 
+fn pluralise(root: &str, plural_suffix: &str, singular_suffix: &str, quantity: i64) -> String {
+    if quantity == 1 {
+        root.to_owned()+singular_suffix
+    } else {
+        root.to_owned()+plural_suffix
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("Hello, world!");
     let fname = args().nth(1).ok_or("Expected filename")?;
@@ -94,7 +102,19 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
     }
-    print!("{:?}", hashmap);
+    print!("{:?}\n", hashmap);
+
+    for (name, score_struct) in &hashmap {
+        print!(
+            "{} took {} {}, with a total score of {}. They missed {} {}.\n",
+            name,
+            score_struct.number_of_results,
+            pluralise("test", "s", "", score_struct.number_of_results),
+            score_struct.total_score,
+            score_struct.missed_tests,
+            pluralise("test", "s", "", score_struct.missed_tests),
+        );
+    }
 
     Ok(())
 }
