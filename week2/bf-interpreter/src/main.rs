@@ -5,6 +5,7 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 
+#[derive(Debug)]
 enum RawInstruction {
     IncPointer,
     DecPointer,
@@ -32,6 +33,7 @@ impl RawInstruction {
     }
 }
 
+#[derive(Debug)]
 struct SourceInstruction {
     instruction : RawInstruction,
     col : usize,
