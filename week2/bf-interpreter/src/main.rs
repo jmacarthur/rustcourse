@@ -4,7 +4,6 @@ use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 
-
 #[derive(Debug)]
 enum RawInstruction {
     IncPointer,
@@ -35,28 +34,41 @@ impl RawInstruction {
 
 #[derive(Debug)]
 struct SourceInstruction {
-    instruction : RawInstruction,
-    col : usize,
-    row : usize
+    instruction: RawInstruction,
+    col: usize,
+    row: usize,
 }
-
 
 fn parse_source_file(filename: &str) -> Result<Vec<SourceInstruction>, Box<dyn std::error::Error>> {
     let f = File::open(filename)?;
     let f_reader = BufReader::new(f);
-    let mut line_number : usize = 0;
-    let mut instructions : Vec<SourceInstruction> = Vec::new();
+    let mut line_number: usize = 0;
+    let mut instructions: Vec<SourceInstruction> = Vec::new();
     for line in f_reader.lines() {
         line_number += 1;
+        let mut column: usize = 0;
+        for c in line?.chars() {
+            column += 1;
+            match RawInstruction::from_char(c) {
+                Some(i) => {
+                    instructions.push(SourceInstruction {
+                        instruction: i,
+                        col: column,
+                        row: line_number,
+                    });
+                }
+                None => {}
+            }
+        }
     }
     println!("{} lines processed", line_number);
     Ok(instructions)
 }
 
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let fname = args().nth(1).ok_or("Expected filename")?;
     let fname_str = fname.as_str();
-    let source : Vec<SourceInstruction> = parse_source_file(&fname_str)?;
+    let source: Vec<SourceInstruction> = parse_source_file(&fname_str)?;
+    println!("{:?}", source);
     Ok(())
 }
