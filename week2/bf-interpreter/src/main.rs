@@ -1,5 +1,4 @@
 use std::env::args;
-use std::error::Error;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
