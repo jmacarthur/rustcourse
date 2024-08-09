@@ -80,7 +80,6 @@ fn pluralise(root: &str, plural_suffix: &str, singular_suffix: &str, quantity: i
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    println!("Hello, world!");
     let fname = args().nth(1).ok_or("Expected filename")?;
     let fname_str = fname.as_str();
     let records = read_records(&fname_str);
