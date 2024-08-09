@@ -29,6 +29,19 @@ impl RawInstruction {
             _ => None,
         }
     }
+    pub fn display(self: Self) -> String {
+        match self {
+            Self::IncPointer => "Increment current location",
+            Self::DecPointer => "Decrement current location",
+            Self::IncByte => "Increment byte at location",
+            Self::DecByte => "Decrement byte at location",
+            Self::Output => "Output byte at current location",
+            Self::Input => "Read byte into current location",
+            Self::JumpForward => "Start looping forward",
+            Self::JumpBackward => "Start looping backward",
+        }
+        .to_string()
+    }
 }
 
 #[derive(Debug)]
