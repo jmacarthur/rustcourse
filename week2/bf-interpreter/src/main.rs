@@ -81,6 +81,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let fname = args().nth(1).ok_or("Expected filename")?;
     let fname_str = fname.as_str();
     let source: Vec<SourceInstruction> = parse_source_file(&fname_str)?;
-    println!("{:?}", source);
+
+    for instruction in source {
+        println!(
+            "[{}:{}:{}] {}",
+            fname_str,
+            instruction.row,
+            instruction.col,
+            instruction.instruction.display()
+        );
+    }
     Ok(())
 }
